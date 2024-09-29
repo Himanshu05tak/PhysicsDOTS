@@ -40,7 +40,11 @@ namespace Character
                     EntityManager.SetComponentData(instance,
                         new Translation { Value = pos.Value + math.mul(rot.Value, offset) });
                     EntityManager.SetComponentData(instance, new Rotation{Value = rot.Value});
-                    //pos.Value += bullet.MoveSpeed * deltaTime * math.forward(rot.Value);
+
+                    var rSpeed = Random.Range(20, 150);
+                    var rEffect = new float3(Random.Range(-500, 500), Random.Range(0, 500), Random.Range(-500, 500));
+                    EntityManager.SetComponentData(instance,
+                        new BulletData { MoveSpeed = rSpeed, CollisionEffect = rEffect });
                 }).Run();
             return jobHandle;
         }

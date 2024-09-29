@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 
 namespace Bullet
 {
@@ -6,6 +7,6 @@ namespace Bullet
     public struct BulletData : IComponentData
     {
         public float MoveSpeed;
-        public Entity Explosion;
+        public float3 CollisionEffect;
     }
 }

@@ -3,6 +3,7 @@ using Unity.Physics;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Random = UnityEngine.Random;
 
 namespace Bullet
 {

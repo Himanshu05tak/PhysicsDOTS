@@ -1,74 +1,66 @@
-﻿using System.ComponentModel;
-using Bullet;
-using Unity.Entities;
+﻿using Duck;
 using Unity.Jobs;
-using Unity.Mathematics;
 using Unity.Physics;
+using Unity.Entities;
 using Unity.Physics.Systems;
-using Unity.Transforms;
-using Random = UnityEngine.Random;
+using System.ComponentModel;
 
-[UpdateAfter(typeof(EndFramePhysicsSystem))]
-public class BulletCollisionEventSystem : JobComponentSystem
+namespace Bullet
 {
-    private BuildPhysicsWorld _physicsWorld;
-    private StepPhysicsWorld _stepWorld;
-
-    protected override void OnCreate()
+    [UpdateAfter(typeof(EndFramePhysicsSystem))]
+    public class BulletCollisionEventSystem : JobComponentSystem
     {
-        _physicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
-        _stepWorld = World.GetOrCreateSystem<StepPhysicsWorld>();
-    }
+        private BuildPhysicsWorld _physicsWorld;
+        private StepPhysicsWorld _stepWorld;
 
-    struct CollisionJobEvent : ICollisionEventsJob
-    {
-        [ReadOnly(true)] public ComponentDataFromEntity<BulletData> BulletGroup;
-        [ReadOnly(true)] public ComponentDataFromEntity<PhysicsVelocity> PhysicsVelocityGroup;
-
-        public void Execute(CollisionEvent collisionEvent)
+        protected override void OnCreate()
         {
-            var entityA = collisionEvent.Entities.EntityA;
-            var entityB = collisionEvent.Entities.EntityB;
+            _physicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
+            _stepWorld = World.GetOrCreateSystem<StepPhysicsWorld>();
+        }
 
-            var isTargetA = PhysicsVelocityGroup.Exists(entityA);
-            var isTargetB = PhysicsVelocityGroup.Exists(entityB);
+        struct CollisionJobEvent : ICollisionEventsJob
+        {
+            [ReadOnly(true)] public ComponentDataFromEntity<BulletData> BulletGroup;
+            [ReadOnly(true)] public ComponentDataFromEntity<DuckData> DuckDataGroup;
 
-            var isBulletA = BulletGroup.Exists(entityA);
-            var isBulletB = BulletGroup.Exists(entityB);
-
-            if (isBulletA && isTargetB)
+            public void Execute(CollisionEvent collisionEvent)
             {
-                var velocityComponent = PhysicsVelocityGroup[entityB];
-                velocityComponent.Linear = new float3(0, 1000, 0);
-                PhysicsVelocityGroup[entityB] = velocityComponent;
-            }
+                var entityA = collisionEvent.Entities.EntityA;
+                var entityB = collisionEvent.Entities.EntityB;
 
-            if (isBulletB && isTargetA)
-            {
-                var velocityComponent = PhysicsVelocityGroup[entityA];
-                velocityComponent.Linear = new float3(0, 1000, 0);
-                PhysicsVelocityGroup[entityA] = velocityComponent;
+                var isTargetA = DuckDataGroup.Exists(entityA);
+                var isTargetB = DuckDataGroup.Exists(entityB);
+
+                var isBulletA = BulletGroup.Exists(entityA);
+                var isBulletB = BulletGroup.Exists(entityB);
+
+                if (isBulletA && isTargetB)
+                {
+                    var destroyComponent = DuckDataGroup[entityB];
+                    destroyComponent.ShouldDestroy = true;
+                    DuckDataGroup[entityB] = destroyComponent;
+                }
+
+                if (isBulletB && isTargetA)
+                {
+                    var destroyComponent = DuckDataGroup[entityA];
+                    destroyComponent.ShouldDestroy = true;
+                    DuckDataGroup[entityA] = destroyComponent;
+                }
             }
         }
-    }
 
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
-    {
-        var scaling = Random.RandomRange(1.0f, 5.0f);
-        
-        var jobHandle1 = new CollisionJobEvent
+        protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
-            BulletGroup = GetComponentDataFromEntity<BulletData>(),
-            PhysicsVelocityGroup = GetComponentDataFromEntity<PhysicsVelocity>()
-        }.Schedule(_stepWorld.Simulation, ref _physicsWorld.PhysicsWorld, inputDeps);
+            var jobHandle1 = new CollisionJobEvent
+            {
+                BulletGroup = GetComponentDataFromEntity<BulletData>(),
+                DuckDataGroup = GetComponentDataFromEntity<DuckData>()
+            }.Schedule(_stepWorld.Simulation, ref _physicsWorld.PhysicsWorld, inputDeps);
 
-        jobHandle1.Complete();
-        // var jobHandle2 = Entities.WithoutBurst().WithName("BulletCollisionEventSystem").WithStructuralChanges()
-        //     .ForEach((ref NonUniformScale scale, ref Translation pos) =>
-        //     {
-        //         scale = new NonUniformScale() { Value = scaling };
-        //         pos.Value = new float3(0,0,0);
-        //     }).Schedule(inputDeps);
-        return jobHandle1;
+            jobHandle1.Complete();
+            return jobHandle1;
+        }
     }
 }

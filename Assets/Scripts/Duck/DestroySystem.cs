@@ -3,12 +3,12 @@ using Unity.Jobs;
 
 namespace Duck
 {
-    public class DuckDestroySystem : JobComponentSystem
+    public class DestroySystem : JobComponentSystem
     {
             protected override JobHandle OnUpdate(JobHandle inputDeps)
             {
-                Entities.WithoutBurst().WithStructuralChanges().WithName("DuckDestroySystem").ForEach(
-                    (Entity entity, ref DuckData duckData) =>
+                Entities.WithoutBurst().WithStructuralChanges().WithName("DestroySystem").ForEach(
+                    (Entity entity, ref DestroyData duckData) =>
                     {
                         if(duckData.ShouldDestroy)
                             EntityManager.DestroyEntity(entity);

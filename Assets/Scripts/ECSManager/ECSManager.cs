@@ -1,6 +1,4 @@
-﻿using System;
-using Bullet;
-using Character;
+﻿using Character;
 using UnityEngine;
 using Unity.Entities;
 using Unity.Transforms;
@@ -12,6 +10,7 @@ namespace ECSManager
     {
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private GameObject characterTracker;
         
         private EntityManager _entityManager;
         private BlobAssetStore _store;
@@ -28,6 +27,7 @@ namespace ECSManager
                 new Translation() { Value = new float3(0,2.2f,0)});
             _entityManager.SetComponentData(playerCharacter,
                 new CharacterData { MoveSpeed = 5, RotationalSpeed = 1, Bullet = bulletEntity });
+            characterTracker.GetComponent<EntityTracker>().SetReceivedEntity(playerCharacter);
         }
 
         private void OnDestroy()

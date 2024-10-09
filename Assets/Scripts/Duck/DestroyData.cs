@@ -3,7 +3,7 @@
 namespace Duck
 {
      [GenerateAuthoringComponent]
-    public struct DuckData : IComponentData
+    public struct DestroyData : IComponentData
     {
         public bool ShouldDestroy;
     }

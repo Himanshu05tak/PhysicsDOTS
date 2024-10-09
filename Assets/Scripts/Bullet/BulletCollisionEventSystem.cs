@@ -22,7 +22,7 @@ namespace Bullet
         struct CollisionJobEvent : ICollisionEventsJob
         {
             [ReadOnly(true)] public ComponentDataFromEntity<BulletData> BulletGroup;
-            [ReadOnly(true)] public ComponentDataFromEntity<DuckData> DuckDataGroup;
+            [ReadOnly(true)] public ComponentDataFromEntity<DestroyData> DuckDataGroup;
 
             public void Execute(CollisionEvent collisionEvent)
             {
@@ -56,7 +56,7 @@ namespace Bullet
             var jobHandle1 = new CollisionJobEvent
             {
                 BulletGroup = GetComponentDataFromEntity<BulletData>(),
-                DuckDataGroup = GetComponentDataFromEntity<DuckData>()
+                DuckDataGroup = GetComponentDataFromEntity<DestroyData>()
             }.Schedule(_stepWorld.Simulation, ref _physicsWorld.PhysicsWorld, inputDeps);
 
             jobHandle1.Complete();

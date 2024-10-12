@@ -11,12 +11,12 @@ namespace Bullet
     public class BulletCollisionEventSystem : JobComponentSystem
     {
         private BuildPhysicsWorld _physicsWorld;
-        private StepPhysicsWorld _stepWorld;
+        private StepPhysicsWorld _stepPhysicsWorld;
 
         protected override void OnCreate()
         {
             _physicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
-            _stepWorld = World.GetOrCreateSystem<StepPhysicsWorld>();
+            _stepPhysicsWorld = World.GetOrCreateSystem<StepPhysicsWorld>();
         }
 
         struct CollisionJobEvent : ICollisionEventsJob
@@ -57,7 +57,7 @@ namespace Bullet
             {
                 BulletGroup = GetComponentDataFromEntity<BulletData>(),
                 DuckDataGroup = GetComponentDataFromEntity<DestroyData>()
-            }.Schedule(_stepWorld.Simulation, ref _physicsWorld.PhysicsWorld, inputDeps);
+            }.Schedule(_stepPhysicsWorld.Simulation, ref _physicsWorld.PhysicsWorld, inputDeps);
 
             jobHandle1.Complete();
             return jobHandle1;

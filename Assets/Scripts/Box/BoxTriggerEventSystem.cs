@@ -43,7 +43,8 @@ namespace Box
                 var dynamicEntity = isBodyATrigger ? entityB : entityA;
 
                 var component = PhysicsVelocityGroup[dynamicEntity];
-                component.Linear += new float3(0, 1000, 0);
+                var boxTrigger = BoxTriggerDataGroup[triggerEntity];
+                component.Linear += boxTrigger.TriggerEffect;
                 PhysicsVelocityGroup[dynamicEntity] = component;
             }
         }

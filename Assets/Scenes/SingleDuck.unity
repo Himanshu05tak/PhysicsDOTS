@@ -413,6 +413,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 142a4f756f8ca8f448b32a8f8b50ebc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TriggerEffect:
+    x: 0
+    y: 0
+    z: 1000
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,7 +1,6 @@
 ﻿using Unity.Jobs;
 using Unity.Physics;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Collections;
 using Unity.Physics.Systems;
 

@@ -26,7 +26,7 @@ namespace ECSManager
             _entityManager.SetComponentData(playerCharacter,
                 new Translation() { Value = new float3(0,2.2f,0)});
             _entityManager.SetComponentData(playerCharacter,
-                new CharacterData { MoveSpeed = 5, RotationalSpeed = 1, Bullet = bulletEntity });
+                new CharacterData { MoveSpeed = 50, RotationalSpeed = 1, Bullet = bulletEntity });
             characterTracker.GetComponent<EntityTracker>().SetReceivedEntity(playerCharacter);
         }
 

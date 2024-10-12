@@ -19,12 +19,17 @@ namespace Character
             var shooting = Input.GetAxis("Fire1");
 
             var jobHandle = Entities.WithName("CharacterControllerSystem").ForEach(
-                (ref PhysicsVelocity physics, ref Rotation rot, ref CharacterData characterData) =>
+                (ref PhysicsVelocity physics, ref PhysicsMass mass, ref Rotation rot, ref CharacterData characterData) =>
                 {
                     if (inputZ == 0)
                         physics.Linear = float3.zero;
                     else
                         physics.Linear += inputZ * (characterData.MoveSpeed * deltaTime) * math.forward(rot.Value);
+                    
+                    mass.InverseInertia[0] = 0;
+                    mass.InverseInertia[1] = 0;
+                    mass.InverseInertia[2] = 0;
+                    
                     //physics.Angular = new float3(0,inputY * characterData.RotationalSpeed, 0);
                     rot.Value = math.mul(math.normalize(rot.Value),
                         quaternion.AxisAngle(math.up(), inputY * deltaTime * characterData.RotationalSpeed));
